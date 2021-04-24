@@ -76,29 +76,34 @@ namespace ResturantOpenningHours.API.Logic
             }
             if(openhours.Count >= 1 && closehours.Count >= 1)
             {
-                
-                foreach (var openitemhour in openhours)
+                times = openhours.Zip(closehours, (open, close) => new Time
                 {
-
-                    foreach (var closeitemhour in closehours)
-                    {
-                        if (openitemhour.Value < closeitemhour.Value)
-                        {
-                            var time = new Time
-                            {
-                                OpenTime = UnixTimeStampToShortTimeString(openitemhour.Value),
-                                CloseTime = UnixTimeStampToShortTimeString(closeitemhour.Value)
-                            };
-                            times.Add(time);
-
-
-                             closehours.Remove(closeitemhour);
-                            break;
-                        }
-                        
-                       
-                    }
-                }
+                    OpenTime = UnixTimeStampToShortTimeString(open.Value),
+                    CloseTime = UnixTimeStampToShortTimeString(close.Value)
+                }).ToList();
+                
+                // foreach (var openitemhour in openhours)
+                // {
+                //
+                //     foreach (var closeitemhour in closehours)
+                //     {
+                //         if (openitemhour.Value < closeitemhour.Value)
+                //         {
+                //             var time = new Time
+                //             {
+                //                 OpenTime = UnixTimeStampToShortTimeString(openitemhour.Value),
+                //                 CloseTime = UnixTimeStampToShortTimeString(closeitemhour.Value)
+                //             };
+                //             times.Add(time);
+                //
+                //
+                //              closehours.Remove(closeitemhour);
+                //             break;
+                //         }
+                //         
+                //        
+                //     }
+                // }
 
             }
             
@@ -114,11 +119,12 @@ namespace ResturantOpenningHours.API.Logic
             if (timer.Count == 1) return string.Format("{0} - {1}", timer.First().OpenTime, timer.First().CloseTime);
             else
             {
-                var value = "";
-                foreach (var item in timer)
-                {
-                  value =  string.Format("{0} - {1},", item.OpenTime, item.CloseTime);
-                }
+                var value = string.Join(", ", timer.Select(x => $"{x.OpenTime} - {x.CloseTime}"));
+                
+                // foreach (var item in timer)
+                // {
+                //   value =  string.Format("{0} - {1},", item.OpenTime, item.CloseTime);
+                // }
                 return value;
                
             }
